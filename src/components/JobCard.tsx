@@ -1,6 +1,6 @@
 import React from 'react';
 import { Job } from '../types';
-import { Bookmark, CheckCircle2, Clock, MapPin, Sparkles, Building2 } from 'lucide-react';
+import { Bookmark, CheckCircle2, Clock, MapPin, Sparkles, Building2, Users } from 'lucide-react';
 
 interface JobCardProps {
   job: Job;
@@ -58,9 +58,12 @@ export const JobCard: React.FC<JobCardProps> = ({
           )}
         </div>
 
+        {/* Posting date and days open in brackets */}
         <div className="flex items-center gap-1.5 text-xs text-[#737783] shrink-0">
-          <Clock className="w-3 h-3" />
-          <span>{job.datePosted}</span>
+          <Clock className="w-3 h-3 text-[#003f8b]" />
+          <span className="font-medium text-[#434751]">
+            {job.postingDate} ({job.daysOpen} {job.daysOpen === 1 ? 'day' : 'days'} open)
+          </span>
           <button
             onClick={onToggleSave}
             className={`p-1 rounded-md hover:bg-[#f3f3fa] transition-colors ml-1 ${
@@ -80,7 +83,7 @@ export const JobCard: React.FC<JobCardProps> = ({
           <h3 className="text-base font-bold text-[#1a1b21] group-hover:text-[#003f8b] leading-snug">
             {job.title}
           </h3>
-          <div className="flex items-center gap-1.5 text-xs text-[#434751] mt-1">
+          <div className="flex flex-wrap items-center gap-1.5 text-xs text-[#434751] mt-1">
             <span className="font-semibold text-[#1a1b21]">{job.company}</span>
             {job.verifiedEmployer && (
               <span className="inline-flex items-center text-[#0F766E]" title="Verified Employer">
@@ -88,7 +91,14 @@ export const JobCard: React.FC<JobCardProps> = ({
               </span>
             )}
             <span className="text-[#c3c6d3]">•</span>
-            <span>★ {job.rating} ({job.reviewCount})</span>
+            {/* Glassdoor Rating for Employer */}
+            <span
+              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#0caa41]/10 text-[#0c8033] font-bold text-[10px] border border-[#0caa41]/20"
+              title={`${job.company} Glassdoor Rating`}
+            >
+              <span className="font-black text-[9px] tracking-wider uppercase">Glassdoor</span>
+              <span>★ {job.glassdoorRating.toFixed(1)}</span>
+            </span>
           </div>
         </div>
 
@@ -116,9 +126,17 @@ export const JobCard: React.FC<JobCardProps> = ({
         <span className="font-medium text-[#434751]">{job.workArrangement}</span>
       </div>
 
-      {/* Salary Range Badge */}
-      <div className="mt-2.5 inline-block px-2.5 py-1 rounded-md bg-[#F0FDFA] border border-[#ccfbf1] text-xs font-bold text-[#0F766E]">
-        {job.salaryCurrency}{job.salaryMin.toLocaleString()} - {job.salaryCurrency}{job.salaryMax.toLocaleString()} a {job.salaryPeriod}
+      {/* Salary Range & Number of Applicants to Date */}
+      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
+        <div className="inline-block px-2.5 py-1 rounded-md bg-[#F0FDFA] border border-[#ccfbf1] text-xs font-bold text-[#0F766E]">
+          {job.salaryCurrency}{job.salaryMin.toLocaleString()} - {job.salaryCurrency}{job.salaryMax.toLocaleString()} a {job.salaryPeriod}
+        </div>
+
+        {/* Number of applicants to date */}
+        <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#f3f3fa] text-xs text-[#434751] border border-[#E5E7EB]">
+          <Users className="w-3.5 h-3.5 text-[#003f8b]" />
+          <span><strong className="font-bold text-[#1a1b21]">{job.applicantsCount}</strong> applicants to date</span>
+        </div>
       </div>
 
       {/* Snippet */}

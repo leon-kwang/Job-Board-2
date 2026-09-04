@@ -17,7 +17,8 @@ import {
   ExternalLink,
   ThumbsUp,
   ThumbsDown,
-  Info
+  Info,
+  Users
 } from 'lucide-react';
 
 interface JobDetailPaneProps {
@@ -99,8 +100,15 @@ export const JobDetailPane: React.FC<JobDetailPaneProps> = ({
                 </span>
               )}
               <span className="text-[#c3c6d3]">•</span>
-              <span className="text-amber-600 font-bold">★ {job.rating}</span>
-              <span className="text-xs text-[#737783]">({job.reviewCount} reviews)</span>
+              {/* Glassdoor Employer Rating */}
+              <span 
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#0caa41]/10 text-[#0c8033] font-bold text-xs border border-[#0caa41]/25"
+                title={`${job.company} Glassdoor Rating`}
+              >
+                <span className="font-black text-[10px] tracking-wide uppercase">Glassdoor</span>
+                <span>★ {job.glassdoorRating.toFixed(1)}</span>
+                <span className="font-normal text-[#434751]">({job.glassdoorReviewCount} reviews)</span>
+              </span>
               <span className="text-[#c3c6d3]">•</span>
               <span className="flex items-center gap-1 text-xs text-[#737783]">
                 <MapPin className="w-3.5 h-3.5" />
@@ -108,14 +116,29 @@ export const JobDetailPane: React.FC<JobDetailPaneProps> = ({
               </span>
             </div>
 
-            {/* Salary Highlight Badge */}
-            <div className="mt-4 flex flex-wrap items-baseline gap-2">
-              <span className="text-2xl font-black text-[#0F766E]">
-                {job.salaryCurrency}{job.salaryMin.toLocaleString()} – {job.salaryCurrency}{job.salaryMax.toLocaleString()}
-              </span>
-              <span className="text-xs text-[#737783] font-medium">
-                a {job.salaryPeriod} • Verified Full-Time Range
-              </span>
+            {/* Salary Highlight Badge & Key Posting Stats */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-baseline gap-2">
+                <span className="text-2xl font-black text-[#0F766E]">
+                  {job.salaryCurrency}{job.salaryMin.toLocaleString()} – {job.salaryCurrency}{job.salaryMax.toLocaleString()}
+                </span>
+                <span className="text-xs text-[#737783] font-medium">
+                  a {job.salaryPeriod} • Verified Full-Time Range
+                </span>
+              </div>
+
+              {/* Posting Date, Days Open & Applicants To Date Badges */}
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#f3f3fa] text-[#434751] border border-[#c3c6d3]/60 font-medium">
+                  <Clock className="w-3.5 h-3.5 text-[#003f8b]" />
+                  <span>Posted {job.postingDate} <strong className="text-[#1a1b21]">({job.daysOpen} {job.daysOpen === 1 ? 'day' : 'days'} open)</strong></span>
+                </div>
+
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EFF6FF] text-[#003f8b] border border-[#adc6ff] font-medium">
+                  <Users className="w-3.5 h-3.5 text-[#003f8b]" />
+                  <span><strong className="text-[#1a1b21] font-bold">{job.applicantsCount}</strong> applicants to date</span>
+                </div>
+              </div>
             </div>
           </div>
 

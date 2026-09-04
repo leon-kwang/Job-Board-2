@@ -17,7 +17,9 @@ import {
   Check,
   Building2,
   MapPin,
-  Bookmark
+  Bookmark,
+  Clock,
+  Users
 } from 'lucide-react';
 
 interface SkillMatcherViewProps {
@@ -208,6 +210,14 @@ export const SkillMatcherView: React.FC<SkillMatcherViewProps> = ({
 
                         <div className="flex flex-wrap items-center gap-2 text-xs text-[#434751] mt-1">
                           <span className="font-bold text-[#1a1b21]">{job.company}</span>
+                          {/* Glassdoor rating */}
+                          <span 
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#0caa41]/10 text-[#0c8033] font-bold text-[10px] border border-[#0caa41]/20"
+                            title={`${job.company} Glassdoor Rating`}
+                          >
+                            <span className="font-black text-[9px] tracking-wider uppercase">Glassdoor</span>
+                            <span>★ {job.glassdoorRating.toFixed(1)}</span>
+                          </span>
                           <span className="text-[#c3c6d3]">•</span>
                           <span className="flex items-center gap-1">
                             <MapPin className="w-3 h-3 text-[#737783]" />
@@ -216,6 +226,16 @@ export const SkillMatcherView: React.FC<SkillMatcherViewProps> = ({
                           <span className="text-[#c3c6d3]">•</span>
                           <span className="font-bold text-[#0F766E]">
                             {job.salaryCurrency}{job.salaryMin.toLocaleString()} – {job.salaryCurrency}{job.salaryMax.toLocaleString()} / month
+                          </span>
+                          <span className="text-[#c3c6d3]">•</span>
+                          <span className="flex items-center gap-1 text-[#434751]">
+                            <Clock className="w-3 h-3 text-[#003f8b]" />
+                            {job.postingDate} ({job.daysOpen} {job.daysOpen === 1 ? 'day' : 'days'} open)
+                          </span>
+                          <span className="text-[#c3c6d3]">•</span>
+                          <span className="flex items-center gap-1 text-[#003f8b] font-medium">
+                            <Users className="w-3 h-3" />
+                            <strong className="text-[#1a1b21]">{job.applicantsCount}</strong> applicants
                           </span>
                         </div>
                       </div>

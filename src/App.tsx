@@ -317,36 +317,59 @@ export function App() {
         )}
 
         {activeTab === 'company-reviews' && (
-          <div className="max-w-4xl mx-auto px-4 py-12 text-center space-y-4">
-            <h1 className="text-2xl font-bold text-[#1a1b21]">
-              Singapore Verified Company Reviews & Workplace Transparencies
-            </h1>
-            <p className="text-sm text-[#434751]">
-              Browse verified candidate interview experiences and salary compensation benchmarks for GovTech Singapore, Grab, and DBS Bank.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 text-left">
-              <div className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs">
-                <span className="text-xs font-bold text-[#003f8b]">GovTech Singapore</span>
-                <p className="text-lg font-black mt-1">★ 4.4 / 5.0</p>
-                <p className="text-xs text-[#737783] mt-1">312 Verified Reviews • 88% Recommend to a Friend</p>
+          <div className="max-w-5xl mx-auto px-4 py-10 space-y-6">
+            <div className="text-center space-y-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#0caa41]/10 text-[#0c8033] border border-[#0caa41]/20">
+                <span>★ Glassdoor Verified Partner Benchmark</span>
               </div>
-              <div className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs">
-                <span className="text-xs font-bold text-[#003f8b]">Grab Holdings</span>
-                <p className="text-lg font-black mt-1">★ 4.2 / 5.0</p>
-                <p className="text-xs text-[#737783] mt-1">489 Verified Reviews • Fast Response Employer</p>
-              </div>
-              <div className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs">
-                <span className="text-xs font-bold text-[#003f8b]">DBS Bank</span>
-                <p className="text-lg font-black mt-1">★ 4.4 / 5.0</p>
-                <p className="text-xs text-[#737783] mt-1">520 Verified Reviews • Top Employer for Fintech</p>
-              </div>
+              <h1 className="text-2xl font-bold text-[#1a1b21]">
+                Singapore Employer Ratings & Glassdoor Workplace Transparencies
+              </h1>
+              <p className="text-sm text-[#434751] max-w-2xl mx-auto">
+                Compare verified Glassdoor ratings, culture scores, and interview transparencies across top Singapore companies.
+              </p>
             </div>
-            <button
-              onClick={() => setActiveTab('find-jobs')}
-              className="mt-6 px-6 py-2.5 bg-[#003f8b] text-white rounded-xl text-xs font-bold"
-            >
-              Back to Job Search
-            </button>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4 text-left">
+              {jobs.map((job) => (
+                <div key={job.id} className="p-4 bg-white rounded-xl border border-[#E5E7EB] shadow-xs hover:border-[#003f8b] transition-all space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-[#003f8b] truncate">{job.company}</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#0caa41]/10 text-[#0c8033] font-bold text-[10px] border border-[#0caa41]/25">
+                      <span className="uppercase text-[9px]">Glassdoor</span>
+                      <span>★ {job.glassdoorRating.toFixed(1)}</span>
+                    </span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xl font-black text-[#1a1b21]">★ {job.glassdoorRating.toFixed(1)}</span>
+                    <span className="text-xs text-[#737783]">/ 5.0 rating</span>
+                  </div>
+                  <div className="text-xs text-[#434751] space-y-1">
+                    <p className="font-medium text-[#1a1b21]">{job.glassdoorReviewCount} employee reviews</p>
+                    <p className="text-[#737783]">• Sector: {job.industry}</p>
+                    <p className="text-[#737783]">• Active Singapore opening: {job.title}</p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedJobId(job.id);
+                      setActiveTab('find-jobs');
+                    }}
+                    className="w-full mt-2 py-1.5 px-3 bg-[#f3f3fa] hover:bg-[#003f8b] hover:text-white rounded-lg text-xs font-bold text-[#003f8b] transition-colors"
+                  >
+                    View Job & Fit Analysis
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center pt-4">
+              <button
+                onClick={() => setActiveTab('find-jobs')}
+                className="px-6 py-2.5 bg-[#003f8b] text-white rounded-xl text-xs font-bold shadow-xs hover:bg-[#2557a7] transition-colors"
+              >
+                Back to Job Search
+              </button>
+            </div>
           </div>
         )}
 

@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { Job, CandidateProfile } from '../types';
+import { Job, CandidateProfile, JobSortOption } from '../types';
 import { SearchFilterBar } from './SearchFilterBar';
 import { JobCard } from './JobCard';
 import { JobDetailPane } from './JobDetailPane';
-import { Sparkles, Filter, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Filter, SlidersHorizontal, CheckCircle2, ArrowUpDown, Users, Calendar, TrendingUp } from 'lucide-react';
 
 interface FindJobsViewProps {
   jobs: Job[];
@@ -46,6 +46,7 @@ export const FindJobsView: React.FC<FindJobsViewProps> = ({
   const [selectedMinSalary, setSelectedMinSalary] = useState(4000);
   const [onlyFreshGrads, setOnlyFreshGrads] = useState(false);
   const [onlyVerified, setOnlyVerified] = useState(true);
+  const [sortBy, setSortBy] = useState<JobSortOption>('applicants-desc');
 
   // Filtered jobs logic
   const filteredJobs = useMemo(() => {
@@ -129,10 +130,29 @@ export const FindJobsView: React.FC<FindJobsViewProps> = ({
     onlyVerified,
   ]);
 
+  // Sorted jobs logic (ability to sort by number of applicants, date posted / days open, match %, salary)
+  const sortedJobs = useMemo(() => {
+    const list = [...filteredJobs];
+    switch (sortBy) {
+      case 'applicants-desc':
+        return list.sort((a, b) => b.applicantsCount - a.applicantsCount);
+      case 'applicants-asc':
+        return list.sort((a, b) => a.applicantsCount - b.applicantsCount);
+      case 'match-desc':
+        return list.sort((a, b) => b.compatibilityPercent - a.compatibilityPercent);
+      case 'days-asc':
+        return list.sort((a, b) => a.daysOpen - b.daysOpen);
+      case 'salary-desc':
+        return list.sort((a, b) => b.salaryMax - a.salaryMax);
+      default:
+        return list;
+    }
+  }, [filteredJobs, sortBy]);
+
   // Selected job object
   const activeJob = useMemo(() => {
-    return jobs.find((j) => j.id === selectedJobId) || filteredJobs[0] || jobs[0];
-  }, [jobs, selectedJobId, filteredJobs]);
+    return jobs.find((j) => j.id === selectedJobId) || sortedJobs[0] || jobs[0];
+  }, [jobs, selectedJobId, sortedJobs]);
 
   const handleSaveSearch = () => {
     const title = `${keyword || 'All Roles'} in ${location || 'Singapore'}`;
@@ -170,7 +190,7 @@ export const FindJobsView: React.FC<FindJobsViewProps> = ({
         onVerifiedToggle={() => setOnlyVerified(!onlyVerified)}
         onSaveSearchAlert={handleSaveSearch}
         isSearchSaved={isCurrentSearchSaved}
-        totalResultsCount={filteredJobs.length}
+        totalResultsCount={sortedJobs.length}
       />
 
       {/* Main Split-Pane Discovery Container */}
@@ -187,7 +207,7 @@ export const FindJobsView: React.FC<FindJobsViewProps> = ({
                     Jobs matched with {candidate.name}'s Profile
                   </span>
                   <span className="text-[11px] text-[#434751]">
-                    Showing {filteredJobs.length} verified roles in Singapore • 94% Avg Match
+                    Showing {sortedJobs.length} verified roles in Singapore • 94% Avg Match
                   </span>
                 </div>
               </div>
@@ -199,10 +219,94 @@ export const FindJobsView: React.FC<FindJobsViewProps> = ({
               </button>
             </div>
 
+            {/* Sorting & Job Count Controls */}
+            <div className="p-3 bg-white border border-[#E5E7EB] rounded-xl shadow-xs space-y-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="font-extrabold text-[#1a1b21]">{sortedJobs.length} Roles Found</span>
+                  <span className="text-[#c3c6d3]">•</span>
+                  <span className="text-[#737783]">Real-time Singapore feed</span>
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className="flex items-center gap-2">
+                  <label htmlFor="sort-jobs-by" className="text-xs font-bold text-[#434751] flex items-center gap-1 shrink-0">
+                    <ArrowUpDown className="w-3.5 h-3.5 text-[#003f8b]" />
+                    <span>Sort by:</span>
+                  </label>
+                  <select
+                    id="sort-jobs-by"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as JobSortOption)}
+                    className="px-2.5 py-1.5 bg-[#f9f9ff] border border-[#c3c6d3] rounded-lg text-xs font-bold text-[#003f8b] hover:border-[#003f8b] focus:outline-none focus:ring-1 focus:ring-[#003f8b] cursor-pointer"
+                  >
+                    <option value="applicants-desc">👥 Most Applicants (High to Low)</option>
+                    <option value="applicants-asc">👥 Fewest Applicants (Low to High)</option>
+                    <option value="match-desc">✨ Highest Skills Match %</option>
+                    <option value="days-asc">📅 Recently Posted (Days Open)</option>
+                    <option value="salary-desc">💰 Salary: High to Low</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Quick sort shortcut pills */}
+              <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-[#f3f3fa] text-xs">
+                <span className="text-[11px] font-semibold text-[#737783]">Quick sort:</span>
+                <button
+                  type="button"
+                  onClick={() => setSortBy('applicants-desc')}
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                    sortBy === 'applicants-desc'
+                      ? 'bg-[#003f8b] text-white border-[#003f8b]'
+                      : 'bg-[#f3f3fa] text-[#434751] border-transparent hover:border-[#c3c6d3]'
+                  }`}
+                >
+                  <Users className="w-3 h-3" />
+                  Most Applicants
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSortBy('applicants-asc')}
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                    sortBy === 'applicants-asc'
+                      ? 'bg-[#003f8b] text-white border-[#003f8b]'
+                      : 'bg-[#f3f3fa] text-[#434751] border-transparent hover:border-[#c3c6d3]'
+                  }`}
+                >
+                  <Users className="w-3 h-3" />
+                  Fewest Applicants
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSortBy('days-asc')}
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                    sortBy === 'days-asc'
+                      ? 'bg-[#003f8b] text-white border-[#003f8b]'
+                      : 'bg-[#f3f3fa] text-[#434751] border-transparent hover:border-[#c3c6d3]'
+                  }`}
+                >
+                  <Calendar className="w-3 h-3" />
+                  Newest / Least Days Open
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSortBy('match-desc')}
+                  className={`px-2 py-0.5 rounded-md text-[11px] font-bold border transition-colors flex items-center gap-1 ${
+                    sortBy === 'match-desc'
+                      ? 'bg-[#003f8b] text-white border-[#003f8b]'
+                      : 'bg-[#f3f3fa] text-[#434751] border-transparent hover:border-[#c3c6d3]'
+                  }`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  Best Match
+                </button>
+              </div>
+            </div>
+
             {/* List of Job Cards */}
-            {filteredJobs.length > 0 ? (
+            {sortedJobs.length > 0 ? (
               <div className="space-y-3">
-                {filteredJobs.map((job) => (
+                {sortedJobs.map((job) => (
                   <JobCard
                     key={job.id}
                     job={job}

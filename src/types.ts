@@ -21,6 +21,13 @@ export interface BenefitItem {
   icon: string;
 }
 
+export type JobSortOption = 
+  | 'applicants-desc' 
+  | 'applicants-asc' 
+  | 'match-desc' 
+  | 'days-asc' 
+  | 'salary-desc';
+
 export interface Job {
   id: string;
   title: string;
@@ -28,6 +35,8 @@ export interface Job {
   companyLogo: string;
   rating: number;
   reviewCount: number;
+  glassdoorRating: number;
+  glassdoorReviewCount: number;
   location: string;
   district: string;
   workArrangement: 'Hybrid' | 'On-site' | 'Remote';
@@ -43,6 +52,9 @@ export interface Job {
   activelyHiring: boolean;
   postedDaysAgo: number;
   datePosted: string;
+  postingDate: string;
+  daysOpen: number;
+  applicantsCount: number;
   industry: string;
   jobFamily: string;
   experienceLevel: 'Fresh Grad' | 'Entry Level' | 'Mid Level' | 'Senior Level' | 'Lead / Director';
