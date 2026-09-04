@@ -1,0 +1,7 @@
+{
+  "name": "TalentTrust - Career Navigation & Job Match",
+  "description": "Candidate-focused career navigation platform with intelligent CV/JD matching, fit analysis, skill gap identification, saved search alerts, and verified job listings.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
